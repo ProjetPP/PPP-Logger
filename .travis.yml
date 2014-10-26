@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - 3.2
+  - 3.3
+  - 3.4
+  - pypy3
+
+install:
+    - pip install scrutinizer-ocular coverage webtest httmock requests ppp_core ppp_datamodel
+
+before_script:
+  - ./setup.py install
+
+script:
+  - coverage3 run run_tests.py
+
+after_script:
+  - ocular --data-file ".coverage"
