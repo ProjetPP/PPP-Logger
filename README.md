@@ -1,8 +1,8 @@
-# PPP Core application.
+# PPP Logging backend
 
-[![Build Status](https://scrutinizer-ci.com/g/ProjetPP/PPP-Core/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/build-status/master)
-[![Code Coverage](https://scrutinizer-ci.com/g/ProjetPP/PPP-Core/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ProjetPP/PPP-Core/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ProjetPP/PPP-Logger/?branch=master)
 
 
 # How to install
