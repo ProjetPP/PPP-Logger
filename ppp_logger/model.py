@@ -24,7 +24,6 @@ responses = Table('responses', metadata,
 feedback = Table('feedback', metadata,
                  Column('feedback_id', Integer, primary_key=True),
                  Column('request_id', None, ForeignKey('requests.request_id')),
-                 Column('response_id', None, ForeignKey('responses.response_id')),
                  Column('response_is_good', Boolean),
                  Column('response_correction', Text),
                 )
