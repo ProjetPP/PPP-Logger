@@ -4,8 +4,6 @@ UI."""
 import json
 import logging
 
-from ppp_datamodel.exceptions import AttributeNotProvided
-
 from ppp_core import HttpRequestHandler as CoreHttpRequestHandler
 from ppp_core.exceptions import ClientError, InvalidConfig
 
@@ -40,13 +38,10 @@ class RequestHandler(CoreHttpRequestHandler):
             request = json.loads(request.read().decode())
         except ValueError:
             raise ClientError('Data is not valid JSON.')
-        except AttributeNotProvided as exc:
-            raise ClientError('Attribute not provided: %s.' % exc.args[0])
-        answers = self.router_class(request).answer()
-        answers = [x.as_dict() for x in answers]
+        answer = self.router_class(request).answer()
         return self.make_response('200 OK',
                                   'application/json',
-                                  json.dumps(answers)
+                                  json.dumps(answer)
                                  )
 
 def app(environ, start_response):
