@@ -17,7 +17,7 @@ With an older one:
 
 ```
 git clone https://github.com/ProjetPP/PPP-Logger.git
-cd PPP-Core
+cd PPP-Logger
 python3 setup.py install
 ```
 
