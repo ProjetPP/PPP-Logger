@@ -10,6 +10,7 @@ TOPLEVEL_ATTRIBUTES_TYPES = {'id': str,
                             }
 RESPONSE_ATTRIBUTES_TYPES = {'tree': (dict, str),
                              'measures': dict,
+                             'trace': list,
                             }
 
 class Logger:
