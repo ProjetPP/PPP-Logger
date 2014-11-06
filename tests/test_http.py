@@ -14,7 +14,7 @@ class HttpTest(PPPLoggerTestCase):
         tree = {'type': 'missing'}
         q = {'id': 'foo', 'question': '42?',
              'responses': [{'tree': tree, 'measures': {}, 'trace': []}]}
-        self.request(q)
+        self.assertStatusInt(q, 200)
         conn = sqlite3.connect(self.db_file.name)
         with conn:
             r = conn.execute('SELECT * FROM requests;')

@@ -13,6 +13,46 @@ RESPONSE_ATTRIBUTES_TYPES = {'tree': (dict, str),
                              'trace': list,
                             }
 
+def freeze(obj):
+    # Makes the object suitable for being a dictionnary key.
+    if isinstance(obj, list) or isinstance(obj, tuple):
+        return tuple(map(freeze, obj))
+    elif isinstance(obj, dict):
+        return frozenset((x,freeze(y)) for (x,y) in obj.items())
+    else:
+        return obj
+def striptraces(obj):
+    if isinstance(obj, list):
+        return list(map(striptraces, obj))
+    elif isinstance(obj, dict):
+        return {x:striptraces(y) for (x,y) in obj.items() if x != 'trace'}
+    elif isinstance(obj, tuple):
+        return tuple(map(striptraces, obj))
+    else:
+        return obj
+
+def make_responses_tree(responses):
+    parents = {} # Used to insert childs
+    tree = [] # The actual tree
+    # Make the earliest responses come first
+    responses = sorted(responses,
+                       key=lambda x:len(x['trace']))
+    for response in responses:
+        if response['trace']:
+            # Build a lookup key for the “parents” dict
+            parent = response['trace'][-1]
+            parent = parent.copy()
+            parent['trace'] = response['trace'][0:-1]
+            location = parents[freeze(parent)]
+        else:
+            location = tree
+
+        # Insert
+        childs = []
+        location.append((response, childs))
+        parents[freeze(response)] = childs
+    return striptraces(tree)
+
 class Logger:
     def __init__(self, request):
         self._check_request(request)
@@ -38,6 +78,8 @@ class Logger:
     def answer(self):
         conn = model.get_engine(self.config.database_url).connect()
         pk = self.insert_in_requests(conn)
+        tree = make_responses_tree(self.request['responses'])
+        self.insert_tree(tree, None)
 
     def insert_in_requests(self, conn):
         ins = model.requests.insert().values(
@@ -45,3 +87,6 @@ class Logger:
                 request_question=self.request['question'])
         res = conn.execute(ins)
         return res.inserted_primary_key[0]
+
+    def insert_tree(self, tree, parent):
+        pass
