@@ -13,7 +13,7 @@ class HttpTest(PPPLoggerTestCase):
     def testWorking(self):
         tree = {'type': 'missing'}
         q = {'id': 'foo', 'question': '42?',
-             'responses': [{'tree': tree, 'measures': {}}]}
+             'responses': [{'tree': tree, 'measures': {}, 'trace': []}]}
         self.request(q)
         conn = sqlite3.connect(self.db_file.name)
         with conn:
@@ -31,7 +31,7 @@ class HttpTest(PPPLoggerTestCase):
     def testSentenceResponse(self):
         tree = 'forty-two?'
         q = {'id': 'foo', 'question': '42?',
-             'responses': [{'tree': tree, 'measures': {}}]}
+             'responses': [{'tree': tree, 'measures': {}, 'trace': []}]}
         self.assertStatusInt(q, 200)
     def testBadResponseAttributeType(self):
         tree = []
