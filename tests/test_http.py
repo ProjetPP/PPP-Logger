@@ -36,5 +36,5 @@ class HttpTest(PPPLoggerTestCase):
     def testBadResponseAttributeType(self):
         tree = []
         q = {'id': 'foo', 'question': '42?',
-             'responses': [{'tree': tree, 'measures': {}}]}
+             'responses': [{'tree': tree, 'measures': {}, 'trace': []}]}
         self.assertStatusInt(q, 400)
