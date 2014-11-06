@@ -27,8 +27,8 @@ setup(
     install_requires=[
         'requests',
         'sqlalchemy>=0.9',
-        'ppp_datamodel>=0.2,<0.3',
-        'ppp_core>=0.2,<0.3',
+        'ppp_datamodel>=0.5,<0.6',
+        'ppp_core>=0.5,<0.6',
     ],
     packages=[
         'ppp_logger',
