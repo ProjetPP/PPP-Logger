@@ -1,3 +1,4 @@
+import json
 
 from . import model
 from .config import Config
@@ -12,6 +13,38 @@ RESPONSE_ATTRIBUTES_TYPES = {'tree': (dict, str),
                              'measures': dict,
                              'trace': list,
                             }
+
+def freeze(obj):
+    # Makes the object suitable for being a dictionnary key.
+    if isinstance(obj, list) or isinstance(obj, tuple):
+        return tuple(map(freeze, obj))
+    elif isinstance(obj, dict):
+        return frozenset((x,freeze(y)) for (x,y) in obj.items())
+    else:
+        return obj
+
+def make_responses_forest(responses):
+    parents = {} # Used to insert childs
+    tree = [] # The actual tree
+    # Make the earliest responses come first
+    responses = sorted(responses,
+                       key=lambda x:len(x['trace']))
+    for response in responses:
+        if len(response['trace']) > 1:
+            # Build a lookup key for the “parents” dict
+            parent = response['trace'][-2]
+            parent = parent.copy()
+            parent['trace'] = response['trace'][0:-1]
+            del parent['module']
+            location = parents[freeze(parent)]
+        else:
+            location = tree
+
+        # Insert
+        childs = []
+        location.append((response, childs))
+        parents[freeze(response)] = childs
+    return tree
 
 class Logger:
     def __init__(self, request):
@@ -37,11 +70,37 @@ class Logger:
 
     def answer(self):
         conn = model.get_engine(self.config.database_url).connect()
-        pk = self.insert_in_requests(conn)
+        pk = self.insert_request(conn)
+        forest = make_responses_forest(self.request['responses'])
+        for tree in forest:
+            self.insert_tree(pk, None, tree)
 
-    def insert_in_requests(self, conn):
+    def insert_request(self, conn):
         ins = model.requests.insert().values(
                 ppp_request_id=self.request['id'],
                 request_question=self.request['question'])
         res = conn.execute(ins)
         return res.inserted_primary_key[0]
+
+    def insert_tree(self, request_id, parent, tree):
+        assert isinstance(tree, tuple), tree
+        # TODO: optimize this function by running insertion in batches
+        # (layer after layer)
+        pk = self.insert_response(request_id, parent, tree[0])
+        for subtree in tree[1]:
+            self.insert_tree(request_id, pk, subtree)
+
+    def insert_response(self, request_id, parent, response):
+        if response['trace']:
+            module = response['trace'][-1]['module']
+        else:
+            module = 'unknown'
+        ins = model.responses.insert().values(
+                request_id=request_id,
+                parent_response_id=parent,
+                response_is_final_result=True, # TODO
+                response_module=module,
+                response_tree=json.dumps(response['tree']),
+                response_language=response.get('language', 'unknown'),
+                response_measures=json.dumps(response['measures']),
+                )
