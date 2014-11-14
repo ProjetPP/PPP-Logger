@@ -23,7 +23,7 @@ python3 setup.py install
 
 Use the `--user` option if you want to install it only for the current user.
 
-# How to run the router (for system administrators)
+# How to run the logger (for system administrators)
 
 You can write your `config.json` file in a quite straightforward way, using
 the file `example_config.json` as an example.
@@ -32,4 +32,13 @@ Then, just run:
 
 ```
 PPP_LOGGER_CONFIG=/path/to/json/config.json gunicorn ppp_logger:app
+```
+
+# How to use the logger API (for frontend developpers)
+
+Just send a POST request to your logger instance, with this content:
+
+```
+{"id": "<request id>", "question": "<the question the user wrote>",
+"responses": [list of responses returned by the core]}
 ```
