@@ -1,17 +1,17 @@
 """Handles the HTTP frontend (ie. answers to requests from a
-UI."""
+UI)."""
 
 import json
 import logging
 
-from ppp_core import HttpRequestHandler as CoreHttpRequestHandler
-from ppp_core.exceptions import ClientError, InvalidConfig
+from ppp_libmodule import HttpRequestHandler as HttpRequestHandler
+from ppp_libmodule.exceptions import ClientError, InvalidConfig
 
 from .logger import Logger
 
 DOC_URL = 'https://github.com/ProjetPP/PPP-Logger#readme'
 
-class RequestHandler(CoreHttpRequestHandler):
+class RequestHandler(HttpRequestHandler):
     """Handles one request."""
 
     def on_bad_method(self):

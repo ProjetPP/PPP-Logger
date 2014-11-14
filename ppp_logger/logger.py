@@ -3,7 +3,7 @@ import json
 from . import model
 from .config import Config
 
-from ppp_core.exceptions import ClientError
+from ppp_libmodule.exceptions import ClientError
 
 TOPLEVEL_ATTRIBUTES_TYPES = {'id': str,
                              'question': str,

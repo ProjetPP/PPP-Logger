@@ -1,4 +1,3 @@
-"""Test HTTP capabilities of the core's frontend."""
 
 import sqlite3
 
