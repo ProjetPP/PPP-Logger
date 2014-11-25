@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from . import model
 from .config import Config
@@ -78,7 +79,8 @@ class Logger:
     def insert_request(self, conn):
         ins = model.requests.insert().values(
                 ppp_request_id=self.request['id'],
-                request_question=self.request['question'])
+                request_question=self.request['question'],
+                request_datetime=datetime.datetime.now())
         res = conn.execute(ins)
         return res.inserted_primary_key[0]
 

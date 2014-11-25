@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column
-from sqlalchemy import Boolean, Integer, String, Text
+from sqlalchemy import Boolean, Integer, String, Text, DateTime
 from sqlalchemy import MetaData, ForeignKey
 
 from .config import Config
@@ -10,7 +10,8 @@ metadata = MetaData()
 requests = Table('requests', metadata,
                  Column('request_id', Integer, primary_key=True),
                  Column('ppp_request_id', String),
-                 Column('request_question', Text)
+                 Column('request_question', Text),
+                 Column('request_datetime', DateTime),
                 )
 
 responses = Table('responses', metadata,

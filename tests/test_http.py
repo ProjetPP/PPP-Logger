@@ -16,7 +16,7 @@ class HttpTest(PPPLoggerTestCase):
         self.assertStatusInt(q, 200)
         conn = sqlite3.connect(self.db_file.name)
         with conn:
-            r = conn.execute('SELECT * FROM requests;')
+            r = conn.execute('SELECT request_id, ppp_request_id, request_question FROM requests;')
             self.assertEqual(r.fetchall(), [(1, 'foo', '42?')])
     def testMissingAttribute(self):
         q = {'question': '42?', 'responses': []}
