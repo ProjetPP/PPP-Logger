@@ -108,12 +108,14 @@ class LoggerTest(PPPTestCase(app)):
         with conn:
             r = conn.execute('SELECT response_id, parent_response_id, response_tree FROM responses;').fetchall()
             fields = ('id', 'parent', 'tree')
-            zipper = lambda x:dict(zip(fields, x))
-            r = list(map(zipper, r))
-            for x in r:
-                if json.loads(x['tree'])['value'] in ('three', 'five'):
+            zipper = lambda x:(x[0], {'id': x[0], 'parent': x[1],
+                                      'tree': json.loads(x[2])})
+            r = dict(map(zipper, r))
+            self.assertEqual(len(r), 9, r)
+            for x in r.values():
+                if x['tree']['value'] in ('three', 'five'):
                     self.assertNotEqual(x['parent'], None)
-                    parent = json.loads(r[x['parent']])
+                    parent = r[x['parent']]
                     self.assertEqual(parent['tree']['value'], 'two')
 
     def testTraceItemMissingFromResponses(self):

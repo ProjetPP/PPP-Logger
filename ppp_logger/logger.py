@@ -74,7 +74,7 @@ class Logger:
         pk = self.insert_request(conn)
         forest = make_responses_forest(self.request['responses'])
         for tree in forest:
-            self.insert_tree(pk, None, tree)
+            self.insert_tree(conn, pk, None, tree)
 
     def insert_request(self, conn):
         ins = model.requests.insert().values(
@@ -84,15 +84,15 @@ class Logger:
         res = conn.execute(ins)
         return res.inserted_primary_key[0]
 
-    def insert_tree(self, request_id, parent, tree):
+    def insert_tree(self, conn, request_id, parent, tree):
         assert isinstance(tree, tuple), tree
         # TODO: optimize this function by running insertion in batches
         # (layer after layer)
-        pk = self.insert_response(request_id, parent, tree[0])
+        pk = self.insert_response(conn, request_id, parent, tree[0])
         for subtree in tree[1]:
-            self.insert_tree(request_id, pk, subtree)
+            self.insert_tree(conn, request_id, pk, subtree)
 
-    def insert_response(self, request_id, parent, response):
+    def insert_response(self, conn, request_id, parent, response):
         if response['trace']:
             module = response['trace'][-1]['module']
         else:
@@ -106,3 +106,5 @@ class Logger:
                 response_language=response.get('language', 'unknown'),
                 response_measures=json.dumps(response['measures']),
                 )
+        res = conn.execute(ins)
+        return res.inserted_primary_key[0]
