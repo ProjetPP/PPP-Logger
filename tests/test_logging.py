@@ -2,9 +2,11 @@
 
 import json
 import sqlite3
+import tempfile
 
 from ppp_logger.logger import make_responses_forest, freeze
-from ppp_logger.tests import PPPLoggerTestCase
+from ppp_logger import app
+from ppp_libmodule.tests import PPPTestCase
 
 R = lambda x:{'type': 'resource', 'value': x}
 def to_trace(x): # Copy object and remove trace
@@ -58,7 +60,15 @@ def notrace(obj):
     else:
         return True
 
-class LoggerTest(PPPLoggerTestCase):
+class LoggerTest(PPPTestCase(app)):
+    config_var = 'PPP_LOGGER_CONFIG'
+    def setUp(self):
+        self.fd = tempfile.NamedTemporaryFile('w+')
+        self.config = '{"database_url": "sqlite:///%s"}' % self.fd.name
+        super(LoggerTest, self).setUp()
+    def tearDown(self):
+        super(LoggerTest, self).tearDown()
+        self.fd.close()
     def testTree(self):
         # Only the last assertEqual would be enough, actually.
         # But the previous assertions makes it easier to debug (more precise
@@ -94,7 +104,7 @@ class LoggerTest(PPPLoggerTestCase):
         q = {'id': 'foo', 'question': question,
              'responses': responses}
         self.assertStatusInt(q, 200)
-        conn = sqlite3.connect(self.db_file.name)
+        conn = sqlite3.connect(self.fd.name)
         with conn:
             r = conn.execute('SELECT response_id, parent_response_id, response_tree FROM responses;').fetchall()
             fields = ('id', 'parent', 'tree')

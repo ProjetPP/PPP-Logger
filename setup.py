@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ppp_logger',
-    version='0.1.2',
+    version='0.1.3',
     description='Logging backend for PPP user interfaces.',
     url='https://github.com/ProjetPP/PPP-Core',
     author='Valentin Lorentz',
@@ -28,7 +28,7 @@ setup(
         'requests',
         'sqlalchemy>=0.9',
         'ppp_datamodel>=0.5,<0.7',
-        'ppp_core>=0.6,<0.7',
+        'ppp_libmodule>=0.7,<0.8',
     ],
     packages=[
         'ppp_logger',
