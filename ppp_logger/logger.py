@@ -54,7 +54,7 @@ class Logger:
         self.config = Config()
 
     def _check_request(self, request):
-        if set(request) != set(TOPLEVEL_ATTRIBUTES_TYPES):
+        if not set(TOPLEVEL_ATTRIBUTES_TYPES).issubset(request):
             raise ClientError('Toplevel missing one required attribute.')
         if not all(isinstance(request[x], y)
                    for x, y in TOPLEVEL_ATTRIBUTES_TYPES.items()):
