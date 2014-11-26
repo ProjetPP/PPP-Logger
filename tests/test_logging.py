@@ -115,3 +115,10 @@ class LoggerTest(PPPTestCase(app)):
                     self.assertNotEqual(x['parent'], None)
                     parent = json.loads(r[x['parent']])
                     self.assertEqual(parent['tree']['value'], 'two')
+
+    def testTraceItemMissingFromResponses(self):
+        # This was a bug caused by the WebUI putting the input in the trace
+        # without putting it as a response
+        i = r'''{"id":"1417024784682-682-12-webui","question":"sqrt(2)","responses":[{"measures":{"accuracy":0.5,"relevance":0.1},"trace":[{"measures":{"accuracy":1,"relevance":0},"module":"input","tree":{"type":"sentence","value":"sqrt(2)"}},{"measures":{"accuracy":0.5,"relevance":0.1},"module":"spell-checker","tree":{"value":"sq rt 2","type":"sentence"}}],"tree":{"value":"sq rt 2","type":"sentence"},"language":"en"}]}'''
+        q = json.loads(i)
+        self.assertStatusInt(q, 200)

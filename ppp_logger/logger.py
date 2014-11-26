@@ -37,7 +37,7 @@ def make_responses_forest(responses):
             parent = parent.copy()
             parent['trace'] = response['trace'][0:-1]
             del parent['module']
-            location = parents[freeze(parent)]
+            location = parents.get(freeze(parent), tree)
         else:
             location = tree
 
