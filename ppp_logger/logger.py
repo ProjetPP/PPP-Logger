@@ -62,7 +62,7 @@ class Logger:
                               'right type.')
         list(map(self._check_response, request['responses']))
     def _check_response(self, response):
-        if set(response) != set(RESPONSE_ATTRIBUTES_TYPES):
+        if set(RESPONSE_ATTRIBUTES_TYPES).issubset(response):
             raise ClientError('Response missing one required attribute.')
         if not all(isinstance(response[x], y)
                    for x, y in RESPONSE_ATTRIBUTES_TYPES.items()):
