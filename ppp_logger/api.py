@@ -18,15 +18,12 @@ class Api:
         # https://docs.python.org/3/library/cgi.html#cgi.FieldStorage.getfirst
         self.limit = int(self.form.getfirst('limit', 10))
         self.order = self.form.getfirst('order', 'last')
-        self.among = int(self.form.getfirst('among', 0))
 
     def validate_form(self):
         if self.limit > 1000:
             raise ClientError('“limit” is too big (> 1000).')
         if self.order not in ('last', 'top'):
             raise ClientError('Only orders “last” and “top” are allowed')
-        if self.among and self.order != 'top':
-            raise ClientError('“among” is only allowed with “top” order.')
 
     def get_selector_last(self):
         s = select([requests.c.request_question, requests.c.request_datetime]) \
@@ -35,15 +32,10 @@ class Api:
         return (s, lambda x:(x[0], str(x[1])))
 
     def get_selector_top(self):
-        s = select([requests.c.request_question,
-                    func.count(requests.c.request_question).label('num')])
-        if self.among:
-            s = s \
-                    .order_by(desc(requests.c.request_datetime)) \
-                    .limit(self.among)
-        s = s \
-                .group_by(requests.c.request_question) \
+        s = select([requests.c.request_question.label('question'),
+                    func.count(requests.c.request_question).label('num')]) \
                 .order_by(desc('num')) \
+                .group_by(requests.c.request_question) \
                 .limit(self.limit)
         return (s, lambda x:(x[0], x[1]))
 
