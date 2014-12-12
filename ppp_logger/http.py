@@ -1,12 +1,14 @@
 """Handles the HTTP frontend (ie. answers to requests from a
 UI)."""
 
+import cgi
 import json
 import logging
 
 from ppp_libmodule import HttpRequestHandler as HttpRequestHandler
 from ppp_libmodule.exceptions import ClientError, InvalidConfig
 
+from .api import Api
 from .logger import Logger
 
 DOC_URL = 'https://github.com/ProjetPP/PPP-Logger#readme'
@@ -43,6 +45,14 @@ class RequestHandler(HttpRequestHandler):
                                   'application/json',
                                   json.dumps(answer)
                                  )
+
+    def on_get(self):
+        form = cgi.FieldStorage()
+        answer = Api(form).answer()
+        return self.make_response('200 OK',
+                                  'application/json',
+                                  json.dumps(answer))
+
 
 def app(environ, start_response):
     """Function called by the WSGI server."""

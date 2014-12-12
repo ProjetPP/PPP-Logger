@@ -15,8 +15,7 @@ class HttpTest(PPPTestCase(app)):
     def tearDown(self):
         super(HttpTest, self).tearDown()
         self.fd.close()
-    def testPostOnly(self):
-        self.assertEqual(self.app.get('/', status='*').status_int, 405)
+    def testInvalidMethod(self):
         self.assertEqual(self.app.put('/', status='*').status_int, 405)
     def testNotJson(self):
         self.assertEqual(self.app.post('/', 'foobar', status='*').status_int, 400)
