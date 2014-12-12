@@ -20,7 +20,7 @@ class Api:
         self.order = self.form.getfirst('order', 'last')
 
     def validate_form(self):
-        if self.limit > 1000:
+        if self.limit > 10000:
             raise ClientError('“limit” is too big (> 1000).')
         if self.order not in ('last', 'top'):
             raise ClientError('Only orders “last” and “top” are allowed')
