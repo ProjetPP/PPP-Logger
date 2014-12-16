@@ -22,6 +22,9 @@ class HttpTest(PPPTestCase(app)):
         r = json.loads(r.body.decode())
         self.assertEqual(r, [])
 
+    def testUnknownOrder(self):
+        self.assertEqual(self.app.get('/', {'order': 'foobar'}, status='*').status_int, 405)
+
     def testLast(self):
         q = {'id': 'foo', 'question': 'Foo bar?', 'responses': []}
         self.assertStatusInt(q, 200)

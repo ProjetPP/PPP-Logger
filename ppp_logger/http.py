@@ -49,7 +49,12 @@ class RequestHandler(HttpRequestHandler):
     def on_get(self):
         form = cgi.FieldStorage(fp=self.environ['wsgi.input'],
                                 environ=self.environ.copy())
-        answer = Api(form).answer()
+        try:
+            answer = Api(form).answer()
+        except ClientError as e:
+            return self.make_response('405 Client Error',
+                                      'text/plain',
+                                      e.args[0])
         return self.make_response('200 OK',
                                   'application/json',
                                   json.dumps(answer))
