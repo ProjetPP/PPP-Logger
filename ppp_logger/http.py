@@ -47,7 +47,8 @@ class RequestHandler(HttpRequestHandler):
                                  )
 
     def on_get(self):
-        form = cgi.FieldStorage()
+        form = cgi.FieldStorage(fp=self.environ['wsgi.input'],
+                                environ=self.environ.copy())
         answer = Api(form).answer()
         return self.make_response('200 OK',
                                   'application/json',
