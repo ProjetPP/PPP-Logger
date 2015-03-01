@@ -47,6 +47,22 @@ class HttpTest(PPPTestCase(app)):
         self.assertEqual(len(r), 1, r)
         self.assertEqual(r[0][0], 'Baz qux?')
 
+    def testFirst(self):
+        q = {'id': 'foo', 'question': 'Foo bar?', 'responses': []}
+        self.assertStatusInt(q, 200)
+        q = {'id': 'foo', 'question': 'Baz qux?', 'responses': []}
+        self.assertStatusInt(q, 200)
+        r = self.app.get('/', {'order': 'first', 'limit': '1'})
+        self.assertEqual(r.content_type, 'application/json')
+        r = json.loads(r.body.decode())
+        self.assertEqual(len(r), 1, r)
+        self.assertEqual(r[0][0], 'Foo bar?')
+        r = self.app.get('/', {'order': 'first', 'limit': '1', 'offset': '1'})
+        self.assertEqual(r.content_type, 'application/json')
+        r = json.loads(r.body.decode())
+        self.assertEqual(len(r), 1, r)
+        self.assertEqual(r[0][0], 'Baz qux?')
+
     def testTop(self):
         q = {'id': 'foo', 'question': 'Foo bar?', 'responses': []}
         self.assertStatusInt(q, 200)
