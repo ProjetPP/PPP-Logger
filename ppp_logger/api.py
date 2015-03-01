@@ -22,9 +22,9 @@ class Api:
 
     def validate_form(self):
         if self.limit > 10000:
-            raise ClientError('“limit” is too big (> 1000).')
+            raise ClientError('“limit” is too big (> 10000).')
         if self.order not in ('last', 'top', 'first'):
-            raise ClientError('Only orders “last” and “top” are allowed')
+            raise ClientError('Only orders “first”, “last” and “top” are allowed')
 
     def get_selector_first(self):
         s = select([requests.c.request_question, requests.c.request_datetime]) \
