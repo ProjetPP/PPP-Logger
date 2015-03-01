@@ -21,7 +21,7 @@ class RequestHandler(HttpRequestHandler):
         trying to open the link in a web browser."""
         text = 'Bad method, only POST is supported. See: ' + DOC_URL
         return self.make_response('405 Method Not Allowed',
-                                  'text/plain',
+                                  'text/plain; charset=utf-8',
                                   text
                                  )
 
@@ -30,7 +30,7 @@ class RequestHandler(HttpRequestHandler):
         trying to open the link in a web browser."""
         text = 'URI not found, only / is supported. See: ' + DOC_URL
         return self.make_response('404 Not Found',
-                                  'text/plain',
+                                  'text/plain; charset=utf-8',
                                   text
                                  )
 
@@ -53,7 +53,7 @@ class RequestHandler(HttpRequestHandler):
             answer = Api(form).answer()
         except ClientError as e:
             return self.make_response('405 Client Error',
-                                      'text/plain',
+                                      'text/plain; charset=utf-8',
                                       e.args[0])
         return self.make_response('200 OK',
                                   'application/json',
