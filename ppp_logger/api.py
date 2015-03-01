@@ -17,6 +17,7 @@ class Api:
     def extract_form(self):
         # https://docs.python.org/3/library/cgi.html#cgi.FieldStorage.getfirst
         self.limit = int(self.form.getfirst('limit', 10))
+        self.offset = int(self.form.getfirst('offset', 0))
         self.order = self.form.getfirst('order', 'last')
 
     def validate_form(self):
@@ -28,6 +29,7 @@ class Api:
     def get_selector_last(self):
         s = select([requests.c.request_question, requests.c.request_datetime]) \
                 .order_by(desc(requests.c.request_datetime)) \
+                .offset(self.offset) \
                 .limit(self.limit)
         return (s, lambda x:(x[0], str(x[1])))
 
@@ -36,6 +38,7 @@ class Api:
                     func.count(requests.c.request_question).label('num')]) \
                 .order_by(desc('num')) \
                 .group_by(requests.c.request_question) \
+                .offset(self.offset) \
                 .limit(self.limit)
         return (s, lambda x:(x[0], x[1]))
 
